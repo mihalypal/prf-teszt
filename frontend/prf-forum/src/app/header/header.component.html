@@ -4,14 +4,13 @@
     </div>
     <div class="right-side">
         <div class="buttons">
-            <button>Főoldal</button>
-            <button>Bejelentkezés</button>
-            <button>Regisztráció</button>
-            <button mat-button [matMenuTriggerFor]="menu">Menu</button>
-            <mat-menu #menu="matMenu" xPosition="before">
-                <button mat-menu-item>Item 1</button>
-                <button mat-menu-item>Item 2</button>
-            </mat-menu>
+            <button (click)="navigate('/topics')">Main page</button>
+            <button (click)="navigate('/my-topics')" *ngIf="isAuthenticated">My Topics</button>
+            <button (click)="navigate('/user-management')" *ngIf="isAuthenticated && isAdmin">User Management</button>
+            
+            <button (click)="navigate('/login')" *ngIf="!isAuthenticated">Sign in</button>
+            <button (click)="navigate('/signup')" *ngIf="!isAuthenticated">Sign up</button>
+            <button (click)="logout()" *ngIf="isAuthenticated" type="reset">Sign out</button>
         </div>
     </div>
 </div>

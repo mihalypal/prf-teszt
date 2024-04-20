@@ -1,11 +1,16 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { User } from '../Model/User';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  private authStatusSource = new BehaviorSubject<boolean>(false);
+  private adminStatusSource = new BehaviorSubject<boolean>(false);
+  authStatus = this.authStatusSource.asObservable();
+  adminStatus = this.adminStatusSource.asObservable();
 
   constructor(private http: HttpClient) { }
 
@@ -20,7 +25,7 @@ export class AuthService {
       'Content-Type': 'application/x-www-form-urlencoded'
     });
 
-    return this.http.post('http://localhost:3000/app/login', body, {headers: headers, withCredentials: true});
+    return this.http.post<User>('http://localhost:3000/app/login', body, {headers: headers, withCredentials: true});
   }
 
   register(user: User) {
@@ -47,10 +52,18 @@ export class AuthService {
   }
 
   checkAuth() {
-    return this.http.get<boolean>('http://localhost:3000/app/checkAuth', {withCredentials: true});
+    return this.http.get<boolean>('http://localhost:3000/app/checkAuth', {withCredentials: true, responseType: 'json'});
   }
 
   isAdmin() {
-    return this.http.get<boolean>('http://localhost:3000/app/isAdmin', {withCredentials: true});
+    return this.http.get<boolean>('http://localhost:3000/app/isAdmin', {withCredentials: true, responseType: 'json'});
+  }
+
+  changeAuthStatus(status: boolean) {
+    this.authStatusSource.next(status);
+  }
+
+  changeAdminStatus(status: boolean) {
+    this.adminStatusSource.next(status);
   }
 }

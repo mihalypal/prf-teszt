@@ -4,4 +4,5 @@ export interface User {
     address: string;
     nickname: string;
     password: string;
+    isAdmin: boolean;
 }

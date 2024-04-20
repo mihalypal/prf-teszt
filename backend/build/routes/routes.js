@@ -115,9 +115,13 @@ const configureRoutes = (passport, router) => {
     });
     // Check user is admin
     router.get('/isAdmin', (req, res) => {
-        //const user = req.user;
-        if (req.isAuthenticated() /* && user.isAdmin*/) {
-            res.status(200).send(true);
+        if (req.isAuthenticated()) {
+            if (req.user.isAdmin) {
+                res.status(200).send(true);
+            }
+            else {
+                res.status(500).send(false);
+            }
         }
         else {
             res.status(500).send(false);
@@ -150,26 +154,36 @@ const configureRoutes = (passport, router) => {
     }));
     // My Topics
     router.get('/my_topics', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        const { author } = req.body;
-        const topics = yield Topic_1.Topic.find({ author });
-        if (topics) {
-            console.log('My Topics successfully retrieved.');
-            res.status(200).send(topics);
+        if (req.isAuthenticated()) {
+            const topics = yield Topic_1.Topic.find({ author: req.user.email });
+            if (topics) {
+                console.log('My Topics successfully retrieved.');
+                res.status(200).send(topics);
+            }
+            else {
+                res.status(404).send('You have not written any topics yet.');
+            }
         }
         else {
-            res.status(404).send('You have not written any topics yet.');
+            res.status(500).send('User is not logged in.');
         }
     }));
     // New Topic
     router.post('/new_topic', (req, res) => {
-        const { author, title, timestamp } = req.body;
-        const topic = new Topic_1.Topic({ author: author, title: title, timestamp: timestamp });
-        topic.save().then(data => {
-            console.log('Topic successfully created.');
-            res.status(200).send(data);
-        }).catch(error => {
-            res.status(500).send(error);
-        });
+        const { title } = req.body;
+        if (req.isAuthenticated()) {
+            const timestamp = new Date();
+            const topic = new Topic_1.Topic({ author: req.user.email, title: title, timestamp: timestamp });
+            topic.save().then(data => {
+                console.log('Topic successfully created.');
+                res.status(200).send(data);
+            }).catch(error => {
+                res.status(500).send(error);
+            });
+        }
+        else {
+            res.status(500).send('User is not logged in.');
+        }
     });
     // Delete Topic
     router.delete('/delete_topic/:topicId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -183,17 +197,22 @@ const configureRoutes = (passport, router) => {
         }
     }));
     // Edit Topic
-    router.post('/edit_topic/:topicId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    router.put('/edit_topic/:topicId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { topicId } = req.params;
-        const { author, title } = req.body;
-        const topic = yield Topic_1.Topic.findById(topicId);
-        if (topic) {
-            const updatedTopic = yield Topic_1.Topic.findOneAndUpdate({ _id: topicId }, { $set: { 'author': author, 'title': title } }, { new: true });
-            // TODO updatedTopic check needed
-            res.status(200).send('Topic successfully edited.');
+        const { title } = req.body;
+        if (req.isAuthenticated()) {
+            const topic = yield Topic_1.Topic.findById(topicId);
+            if (topic) {
+                const updatedTopic = yield Topic_1.Topic.findOneAndUpdate({ _id: topicId }, { $set: { 'title': title } }, { new: true });
+                // TODO updatedTopic check needed
+                res.status(200).send('Topic successfully edited.');
+            }
+            else {
+                res.status(404).send('Topic not found.');
+            }
         }
         else {
-            res.status(404).send('Topic not found.');
+            res.status(500).send('User is not logged in.');
         }
     }));
     // Like Topic

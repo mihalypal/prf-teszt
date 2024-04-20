@@ -1,0 +1,28 @@
+<app-input-fields *ngIf="isAuthenticated" (topic)="recieveTopic($event)"></app-input-fields>
+<div class="table-container" *ngIf="topics && topics.length; else noUsersTemplate">
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 15%;">Author</th>
+                <th>Title</th>
+                <th style="width: 10%;">Date</th>
+                <th style="width: 10%;" *ngIf="isAdmin">Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let topic of topics">
+                <td>{{topic.author}}</td>
+                <td>{{topic.title}}</td>
+                <td style="text-align: center;">{{ topic.timestamp | date: 'yyyy.MM.dd HH:mm' }}</td>
+                <td *ngIf="isAdmin"><button class="buttons" (click)="deleteTopic(topic._id)">Delete</button></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<ng-template #noUsersTemplate>
+    <p>No topics available.</p>
+</ng-template>
+
+<!--<div class="buttons" *ngIf="isAuthenticated">
+    <button type="reset" (click)="logout()">Logout</button>
+</div>-->

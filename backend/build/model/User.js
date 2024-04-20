@@ -41,11 +41,3 @@ exports.UserSchema.methods.comparePassword = function (candidatePassword, callba
 };
 exports.User = mongoose_1.default.model('User', exports.UserSchema);
 exports.default = exports.User;
-/*export interface UserModel extends Express.User {
-    email: string;
-    name: string;
-    address: string;
-    nickname: string;
-    password: string;
-    isAdmin: boolean;
-}*/ 

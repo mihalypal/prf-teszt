@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../shared/services/auth.service';
+import { User } from '../shared/Model/User';
 
 @Component({
   selector: 'app-login',
@@ -26,7 +27,9 @@ export class LoginComponent {
           if (data) {
             // navigation
             console.log(data);
-            this.navigate('/user-management');
+            this.authService.changeAuthStatus(true);
+            this.authService.changeAdminStatus(data.isAdmin);
+            this.navigate('/topics');
           }
         }, error: (err) => {
           console.log(err);

@@ -4,6 +4,7 @@ import { PassportStatic, deserializeUser } from 'passport';
 import { User } from '../model/User';
 import { Topic } from '../model/Topic';
 import { Comment } from '../model/Comment';
+import { json } from 'body-parser';
 
 export const configureRoutes = (passport: PassportStatic, router: Router): Router => {    
 
@@ -15,7 +16,7 @@ export const configureRoutes = (passport: PassportStatic, router: Router): Route
     // User endpoints
     // Log in
     router.post('/login', (req: Request, res: Response, next: NextFunction) => {
-        passport.authenticate('local', (error: string | null, user: typeof User) => {
+        passport.authenticate('local', (error: string | null, user: Express.User) => {
             if (error) {
                 res.status(500).send(error);
             } else {
@@ -107,9 +108,12 @@ export const configureRoutes = (passport: PassportStatic, router: Router): Route
 
     // Check user is admin
     router.get('/isAdmin', (req: Request, res: Response) => {
-        //const user = req.user;
-        if (req.isAuthenticated()/* && user.isAdmin*/) {
-            res.status(200).send(true);
+        if (req.isAuthenticated()) {
+            if (req.user.isAdmin) {
+                res.status(200).send(true);
+            } else {
+                res.status(500).send(false);
+            }
         } else {
             res.status(500).send(false);
         }
@@ -146,28 +150,37 @@ export const configureRoutes = (passport: PassportStatic, router: Router): Route
 
     // My Topics
     router.get('/my_topics', async (req: Request, res: Response) => {
-        const { author } = req.body;
-        
-        const topics = await Topic.find({ author });
-        if (topics) {
-            console.log('My Topics successfully retrieved.');            
-            res.status(200).send(topics);
+        if (req.isAuthenticated()) {
+            const topics = await Topic.find({ author: req.user.email });
+            if (topics) {
+                console.log('My Topics successfully retrieved.');
+                res.status(200).send(topics);
+            } else {
+                res.status(404).send('You have not written any topics yet.');
+            }
         } else {
-            res.status(404).send('You have not written any topics yet.');
+            res.status(500).send('User is not logged in.');
         }
     });
 
     // New Topic
     router.post('/new_topic', (req: Request, res: Response) => {
-        const { author, title, timestamp } = req.body;
-        const topic = new Topic({author: author, title: title, timestamp: timestamp});
-        topic.save().then(data => {
-            console.log('Topic successfully created.');
-            
-            res.status(200).send(data);
-        }).catch(error => {
-            res.status(500).send(error);
-        });
+        const { title } = req.body;
+
+        if (req.isAuthenticated()) {
+            const timestamp = new Date();
+
+            const topic = new Topic({author: req.user.email, title: title, timestamp: timestamp});
+
+            topic.save().then(data => {
+                console.log('Topic successfully created.');
+                res.status(200).send(data);
+            }).catch(error => {
+                res.status(500).send(error);
+            });
+        } else {
+            res.status(500).send('User is not logged in.');
+        }
     });
 
     // Delete Topic
@@ -182,21 +195,24 @@ export const configureRoutes = (passport: PassportStatic, router: Router): Route
     });
     
     // Edit Topic
-    router.post('/edit_topic/:topicId', async (req: Request, res: Response) => {
+    router.put('/edit_topic/:topicId', async (req: Request, res: Response) => {
         const { topicId } = req.params;
-        const { author, title } = req.body;
-
-        const topic = await Topic.findById(topicId);
-        if (topic) {
-            const updatedTopic = await Topic.findOneAndUpdate(
-                { _id: topicId },
-                { $set: { 'author': author, 'title': title } },
-                { new: true }
-            );
-            // TODO updatedTopic check needed
-            res.status(200).send('Topic successfully edited.');
+        const { title } = req.body;
+        if (req.isAuthenticated()) {
+            const topic = await Topic.findById(topicId);
+            if (topic) {
+                const updatedTopic = await Topic.findOneAndUpdate(
+                    { _id: topicId },
+                    { $set: { 'title': title } },
+                    { new: true }
+                );
+                // TODO updatedTopic check needed
+                res.status(200).send('Topic successfully edited.');
+            } else {
+                res.status(404).send('Topic not found.');
+            }
         } else {
-            res.status(404).send('Topic not found.');
+            res.status(500).send('User is not logged in.');
         }
     });
 

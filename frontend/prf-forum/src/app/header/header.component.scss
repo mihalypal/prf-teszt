@@ -37,6 +37,14 @@ div {
     background-color: rgb(52, 52, 116);
 }
 
+.buttons button[type="reset"] {
+    background-color: rgb(211, 76, 76);
+}
+
+.buttons button[type="reset"]:hover {
+    background-color: rgb(129, 45, 45);
+}
+
 @media (max-width: 860px) {
     .right-side button {
         display: flex;
