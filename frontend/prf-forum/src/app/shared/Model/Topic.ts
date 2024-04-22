@@ -3,6 +3,6 @@ export interface Topic {
     author: string;
     title: string;
     timestamp: Date;
-    comments: string;
+    comments: Comment[];
     usersLikesTopic: string;
 }

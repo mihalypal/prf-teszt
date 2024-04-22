@@ -2,6 +2,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-top: 60px;
+    height: 80vh;
+    width: 100%;
 }
 
 .login-form {
@@ -48,4 +51,17 @@
 
 .login-form button[type="button"]:hover {
     background-color: rgb(61, 145, 61);
+}
+
+.overlay {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #cccccc77;
+    z-index: 1000;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
 }

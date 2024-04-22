@@ -11,5 +11,8 @@
         <div *ngIf="errorMessage">
             <p>{{errorMessage}}</p>
         </div>
+        <div class="overlay" *ngIf="isLoading">
+            <mat-spinner></mat-spinner>
+        </div>
     </form>
 </div>

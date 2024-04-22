@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../shared/services/auth.service';
 import { CommonModule } from '@angular/common';
@@ -15,24 +15,36 @@ export class HeaderComponent {
   isAdmin?: boolean;
 
   constructor(private authService: AuthService, private router: Router) {
-    this.authService.checkAuth().subscribe({
+    /* this.authService.checkAuth().subscribe({
       next: (data) => {
         this.authService.changeAuthStatus(data);
       }, error: (err) => {
         console.log('You are currently not logged in.');
       }
+    }); */
+
+    /* this.authService.isAdmin().subscribe({
+      next: (data) => {
+        this.authService.changeAdminStatus(data);
+      }, error: (err) => {
+        console.log('You are not an admin.');
+      }
+    }); */
+
+    authService.checkAuth().subscribe( (data) => {
+      this.authService.changeAuthStatus(data);
+    }, (err) => {
+      console.log('You are currently not logged in.');
     });
 
     this.authService.authStatus.subscribe(isAuthenticated => {
       this.isAuthenticated = isAuthenticated;
     });
 
-    this.authService.isAdmin().subscribe({
-      next: (data) => {
-        this.authService.changeAdminStatus(data);
-      }, error: (err) => {
-        console.log('You are not an admin.');
-      }
+    authService.isAdmin().subscribe( (data) => {
+      this.authService.changeAdminStatus(data);
+    }, (err) => {
+      console.log('You are not an admin.');
     });
 
     this.authService.adminStatus.subscribe(isAdmin => {

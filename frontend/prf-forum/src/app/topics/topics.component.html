@@ -12,7 +12,7 @@
         <tbody>
             <tr *ngFor="let topic of topics">
                 <td>{{topic.author}}</td>
-                <td>{{topic.title}}</td>
+                <td class="links" (click)="navigate(topic._id)"><a>{{topic.title}}</a></td>
                 <td style="text-align: center;">{{ topic.timestamp | date: 'yyyy.MM.dd HH:mm' }}</td>
                 <td *ngIf="isAdmin"><button class="buttons" (click)="deleteTopic(topic._id)">Delete</button></td>
             </tr>

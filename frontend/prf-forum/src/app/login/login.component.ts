@@ -3,12 +3,12 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../shared/services/auth.service';
-import { User } from '../shared/Model/User';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, CommonModule, RouterModule],
+  imports: [FormsModule, CommonModule, RouterModule, MatProgressSpinnerModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
@@ -16,10 +16,12 @@ export class LoginComponent {
   email: string = '';
   password: string = '';
   errorMessage: string = '';
+  isLoading = false;
 
   constructor(private router: Router, private authService: AuthService) {}
 
   login() {
+    this.isLoading = true;
     if (this.email && this.password) {
       this.errorMessage = '';
       this.authService.login(this.email, this.password).subscribe({
@@ -29,6 +31,7 @@ export class LoginComponent {
             console.log(data);
             this.authService.changeAuthStatus(true);
             this.authService.changeAdminStatus(data.isAdmin);
+            this.isLoading = false;
             this.navigate('/topics');
           }
         }, error: (err) => {
@@ -37,6 +40,7 @@ export class LoginComponent {
       })
     } else {
       this.errorMessage = 'Form is empty';
+      this.isLoading = false;
     }
   }
 

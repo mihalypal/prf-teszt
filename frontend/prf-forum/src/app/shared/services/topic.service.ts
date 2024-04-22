@@ -13,6 +13,10 @@ export class TopicService {
     return this.http.get<Topic[]>('http://localhost:3000/app/all_topics', {withCredentials: true});
   }
 
+  getTopic(topicId: string) {
+    return this.http.get<Topic>(`http://localhost:3000/app/topic/${topicId}`, {withCredentials: true});
+  }
+
   getUserTopics() {
     return this.http.get<Topic[]>('http://localhost:3000/app/my_topics', {withCredentials: true});
   }

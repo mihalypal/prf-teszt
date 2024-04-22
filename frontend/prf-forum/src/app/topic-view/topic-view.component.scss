@@ -1,0 +1,105 @@
+table {
+    margin: auto;
+    width: 80%;
+    margin-top: 20px;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+th {
+    background-color: #6cd46f;
+    color: #333;
+}
+
+h2 {
+    text-align: center;
+    margin: 20px;
+}
+
+.table-container {
+    margin: 20px;
+}
+
+.topic-table {
+    border: 1px solid #bbbbbb;
+    border-radius: 10px;
+    margin-top: 80px;
+}
+
+.topic-table th {
+    display: flex;
+    justify-content: space-between;
+    border-radius: 10px 10px 0 0;
+}
+
+th span {
+    margin: 0 20px;
+}
+
+.comments-table {
+    width: 80%;
+    margin: auto;
+}
+
+.comments-table tbody {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+}
+
+.comments-table th {
+    text-align: center;
+}
+
+.comments-table tr {
+    padding: 10px;
+    min-width: 100%;
+}
+
+.comments-table tr td {
+    display: inline-block;
+    width: 100%;
+    padding: 0;
+}
+
+mat-card {
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+mat-card-header {
+    background-color: cornflowerblue;
+    border-radius: 10px 10px 0 0;
+    padding: 10px;
+}
+
+.topic-table mat-card-header {
+    background-color: #6cd46f;
+    border-radius: 10px 10px 0 0;
+    padding: 10px;
+}
+
+mat-card-content {
+    padding: 15px;
+}
+
+mat-card-actions {
+    padding: 10px 10px 0;
+    min-height: 24px !important;
+}
+
+.topic-table mat-card-actions {
+    padding: 10px 10px 0;
+    display: flex;
+    justify-content: end;
+    min-height: 24px !important;
+}
+
+mat-card-footer {
+    padding: 0 5px 5px;
+}

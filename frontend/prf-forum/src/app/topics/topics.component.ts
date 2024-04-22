@@ -74,4 +74,9 @@ export class TopicsComponent {
   recieveTopic(event: any) {
     this.topics?.push(event);
   }
+
+  navigate(to: string) {
+    to = '/topic/' + to;
+    this.router.navigateByUrl(to);
+  }
 }
