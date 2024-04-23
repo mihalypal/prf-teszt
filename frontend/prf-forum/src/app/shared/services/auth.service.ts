@@ -59,6 +59,10 @@ export class AuthService {
     return this.http.get<boolean>('http://localhost:3000/app/isAdmin', {withCredentials: true, responseType: 'json'});
   }
 
+  whoAmI() {
+    return this.http.get<User>('http://localhost:3000/app/currentUser', {withCredentials: true});
+  }
+
   changeAuthStatus(status: boolean) {
     this.authStatusSource.next(status);
   }

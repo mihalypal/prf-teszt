@@ -1,7 +1,10 @@
 <div class="login-container">
     <form class="login-form" (ngSubmit)="login()">
         <input [(ngModel)]="email" name="email" type="email" placeholder="Email" />
-        <input [(ngModel)]="password" name="password" type="password" placeholder="Password" />
+        <input [(ngModel)]="password" name="password" [type]="showPassword ? 'text' : 'password'" placeholder="Password" />
+        <div>
+            <label for="showPassword">Show password </label><input id="showPassword" name="showPassword" type="checkbox" [(ngModel)]="showPassword"  />
+        </div>
         <div class="buttons">
             <button type="submit">Login</button>
         </div>

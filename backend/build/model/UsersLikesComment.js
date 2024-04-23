@@ -7,6 +7,6 @@ exports.UsersLikesComment = exports.UsersLikesCommentSchema = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 ;
 exports.UsersLikesCommentSchema = new mongoose_1.default.Schema({
-    username: { type: String, required: true }
+    username: { type: String }
 });
 exports.UsersLikesComment = mongoose_1.default.model('UsersLikesComment', exports.UsersLikesCommentSchema);

@@ -6,7 +6,7 @@ export interface IUsersLikesComment extends Document {
 };
 
 export const UsersLikesCommentSchema: Schema<IUsersLikesComment> = new mongoose.Schema({
-    username: { type: String, required: true }
+    username: { type: String }
 });
 
 export const UsersLikesComment: Model<IUsersLikesComment> = mongoose.model<IUsersLikesComment>('UsersLikesComment', UsersLikesCommentSchema);

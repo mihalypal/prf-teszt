@@ -4,11 +4,22 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../shared/services/auth.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, CommonModule, RouterModule, MatProgressSpinnerModule],
+  imports: [FormsModule,
+            CommonModule,
+            RouterModule,
+            MatProgressSpinnerModule,
+            MatIconModule,
+            MatButtonModule,
+            MatFormFieldModule,
+            MatInputModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
@@ -17,6 +28,7 @@ export class LoginComponent {
   password: string = '';
   errorMessage: string = '';
   isLoading = false;
+  showPassword = false;
 
   constructor(private router: Router, private authService: AuthService) {}
 
@@ -46,6 +58,10 @@ export class LoginComponent {
 
   navigate(to: string) {
     this.router.navigateByUrl(to);
+  }
+
+  togglePassword() {
+
   }
 
 }

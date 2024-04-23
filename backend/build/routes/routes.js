@@ -13,6 +13,7 @@ exports.configureRoutes = void 0;
 const User_1 = require("../model/User");
 const Topic_1 = require("../model/Topic");
 const Comment_1 = require("../model/Comment");
+const UsersLikesComment_1 = require("../model/UsersLikesComment");
 const configureRoutes = (passport, router) => {
     router.get('/', (req, res) => {
         res.write('The server is available at the moment.');
@@ -127,10 +128,18 @@ const configureRoutes = (passport, router) => {
             res.status(500).send(false);
         }
     });
+    // Get current user
+    router.get('/currentUser', (req, res) => {
+        if (req.isAuthenticated()) {
+            res.status(200).send(req.user);
+        }
+        else {
+            res.status(500).send('User is not logged in.');
+        }
+    });
     // Topic endpoints
     // One specific Topic
     router.get('/topic/:topicId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        // TODO POSTMAN ENDPOINT TO TEST THIS
         const { topicId } = req.params;
         const topic = yield Topic_1.Topic.findById(topicId);
         if (topic) {
@@ -204,7 +213,6 @@ const configureRoutes = (passport, router) => {
             const topic = yield Topic_1.Topic.findById(topicId);
             if (topic) {
                 const updatedTopic = yield Topic_1.Topic.findOneAndUpdate({ _id: topicId }, { $set: { 'title': title } }, { new: true });
-                // TODO updatedTopic check needed
                 res.status(200).send('Topic successfully edited.');
             }
             else {
@@ -253,18 +261,23 @@ const configureRoutes = (passport, router) => {
     }));
     // New Comment
     router.post('/new_comment/:topicId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        const topicId = req.params.topicId;
-        const { author, comment, timestamp } = req.body;
-        const newComment = new Comment_1.Comment({ author: author, comment: comment, timestamp: timestamp });
-        const topic = yield Topic_1.Topic.findById(topicId);
-        if (!topic) {
-            res.status(404).send('Topic not found');
+        if (req.isAuthenticated()) {
+            const topicId = req.params.topicId;
+            const { comment } = req.body;
+            const newComment = new Comment_1.Comment({ author: req.user.email, comment: comment, timestamp: new Date() });
+            const topic = yield Topic_1.Topic.findById(topicId);
+            if (!topic) {
+                res.status(404).send('Topic not found');
+            }
+            else {
+                topic.comments.push(newComment);
+                topic.save();
+                console.log('Comment successfully created.');
+                res.status(200).send(newComment);
+            }
         }
         else {
-            topic.comments.push(newComment);
-            topic.save();
-            console.log('Comment successfully created.');
-            res.status(200).send(topic);
+            res.status(500).send('User is not logged in.');
         }
     }));
     // Delete comment
@@ -273,8 +286,6 @@ const configureRoutes = (passport, router) => {
         const topic = yield Topic_1.Topic.findById(topicId);
         if (topic) {
             const updatedTopic = yield Topic_1.Topic.findByIdAndUpdate(topicId, { $pull: { comments: { _id: commentId } } }, { new: true });
-            // TODO check updatedTopic
-            // send back topic to refresh FE data
             res.status(200).send('Comment successfully deleted.');
         }
         else {
@@ -288,7 +299,6 @@ const configureRoutes = (passport, router) => {
         const topic = yield Topic_1.Topic.findById(topicId);
         if (topic) {
             const updatedTopic = yield Topic_1.Topic.findOneAndUpdate({ _id: topicId, 'comments._id': commentId }, { $set: { 'comments.$.author': author, 'comments.$.comment': comment } }, { new: true });
-            // TODO check updatedTopic
             res.status(200).send('Comment successfully edited.');
         }
         else {
@@ -296,14 +306,51 @@ const configureRoutes = (passport, router) => {
         }
     }));
     // Like Comment
-    router.post('/like_comment/:topicId/:commentId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        res.status(404).send('Now way to like a Comment yet.');
-        // TODO like Comment
+    router.put('/like_comment/:topicId/:commentId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const { topicId, commentId } = req.params;
+        if (req.isAuthenticated()) {
+            const topic = yield Topic_1.Topic.findById(topicId);
+            if (topic) {
+                const userWhoLiked = new UsersLikesComment_1.UsersLikesComment({ username: req.user.email });
+                const updatedTopic = yield Topic_1.Topic.findOneAndUpdate({ _id: topicId, 'comments._id': commentId }, { $push: { 'comments.$[comment].usersLikesComment': userWhoLiked } }, {
+                    new: true,
+                    arrayFilters: [{ 'comment._id': commentId, 'comment.usersLikesComment.username': { $nin: [req.user.email] } }]
+                });
+                if (updatedTopic) {
+                    console.log('Comment successfully liked.');
+                    res.status(200).send(updatedTopic);
+                }
+                else {
+                    res.status(200).send(topic);
+                }
+            }
+        }
+        else {
+            res.status(500).send('User is not logged in.');
+        }
     }));
     // Dislike Comment
-    router.post('/dislike_comment/:topicId/:commentId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        res.status(404).send('Now way to dislike a Comment yet.');
-        // TODO dislike Comment
+    router.put('/dislike_comment/:topicId/:commentId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const { topicId, commentId } = req.params;
+        if (req.isAuthenticated()) {
+            const topic = yield Topic_1.Topic.findById(topicId);
+            if (topic) {
+                const updatedTopic = yield Topic_1.Topic.findOneAndUpdate({ _id: topicId, 'comments._id': commentId, 'comments.usersLikesComment.username': req.user.email }, { $pull: { 'comments.$[comment].usersLikesComment': { username: req.user.email } } }, {
+                    new: true,
+                    arrayFilters: [{ 'comment._id': commentId }]
+                });
+                if (updatedTopic) {
+                    console.log('Comment successfully disliked.');
+                    res.status(200).send(updatedTopic);
+                }
+                else {
+                    res.status(200).send(topic);
+                }
+            }
+        }
+        else {
+            res.status(500).send('User is not logged in.');
+        }
     }));
     return router;
 };

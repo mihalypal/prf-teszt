@@ -1,5 +1,5 @@
 <div class="table-container">
-    <table class="topic-table">
+    <!--<table class="topic-table">
         <thead>
             <tr>
                 <th>
@@ -13,16 +13,16 @@
                 <td style="text-align: center;"><h2>{{ topic?.title }}</h2></td>
             </tr>
         </tbody>
-    </table>
+    </table>-->
     <table class="topic-table">
         <tbody>
             <tr>
                 <div class="card-container">
                     <mat-card>
-                        <mat-card-header>Question from {{topic!.author}}:</mat-card-header>
+                        <mat-card-header>Question from {{topic?.author}}:</mat-card-header>
                         <mat-card-content><h2>{{topic?.title}}</h2></mat-card-content>
-                        <mat-card-actions><mat-icon fontIcon="thumb_up"></mat-icon></mat-card-actions>
-                        <mat-card-footer><hr>{{topic!.timestamp | date: 'yyyy.MM.dd HH:mm' }}</mat-card-footer>
+                        <mat-card-actions><mat-icon fontIcon="thumb_up"></mat-icon><mat-icon fontIcon="thumb_down"></mat-icon></mat-card-actions>
+                        <mat-card-footer><hr>{{topic?.timestamp | date: 'yyyy.MM.dd HH:mm' }}</mat-card-footer>
                     </mat-card>
                 </div>
             </tr>
@@ -69,20 +69,38 @@
                 <td>
                     <div class="card-container">
                         <mat-card>
-                            <mat-card-header>{{ i + 1 }}/{{ comments!.length }} Reply from {{comment.author}}:</mat-card-header>
+                            <mat-card-header [ngClass]="{'my-comment': comment.author === currentUser?.email}">{{ i + 1 }}/{{ comments!.length }} Reply from <div *ngIf="comment.author === currentUser?.email">&nbsp;you (</div>{{comment.author}}<div *ngIf="comment.author === currentUser?.email">)</div>:</mat-card-header>
                             <mat-card-content>{{comment.comment}}</mat-card-content>
-                            <mat-card-actions><mat-icon fontIcon="thumb_up"></mat-icon></mat-card-actions>
+                            <mat-card-actions>
+                                <mat-icon (click)="likeComment(comment._id)" fontIcon="thumb_up" *ngIf="!hasUserLiked(comment)"></mat-icon>
+                                <span  *ngIf="!hasUserLiked(comment) && comment.usersLikesComment.length > 0">{{comment.usersLikesComment.length}} liked this</span>
+                                <mat-icon (click)="dislikeComment(comment._id)" fontIcon="thumb_down" *ngIf="hasUserLiked(comment)"></mat-icon>
+                                <span  *ngIf="hasUserLiked(comment)">You <span *ngIf="comment.usersLikesComment.length > 1">and {{comment.usersLikesComment.length - 1}} </span>liked this</span>
+                                <mat-icon (click)="deleteComment(comment._id)" fontIcon="delete" id="delete-icon" *ngIf="currentUser?.email === comment.author || currentUser?.isAdmin"></mat-icon>
+                            </mat-card-actions>
                             <mat-card-footer><hr>{{comment.timestamp | date: 'yyyy.MM.dd HH:mm' }}</mat-card-footer>
                         </mat-card>
                     </div>
                 </td>
             </tr>
             <tr>
-                <td colspan="2">
+                <!--<td colspan="2">
                     <input type="text" placeholder="New comment">
                 </td>
                 <td>
                     <button type="submit">Submit</button>
+                </td>-->
+                <td>
+                    <div class="card-container new-comment">
+                        <mat-card>
+                            <mat-card-header>New comment:</mat-card-header>
+                            <mat-card-content>
+                                <!--<input type="text" placeholder="What's in your mind?">-->
+                                <textarea name="comment" id="comment" rows="5" [(ngModel)]="commentText"></textarea>
+                            </mat-card-content>
+                            <mat-card-actions><button type="submit" (click)="addComment()">Submit</button></mat-card-actions>
+                        </mat-card>
+                    </div>
                 </td>
             </tr>
         </tbody>
@@ -93,6 +111,20 @@
     <tr>
         <td colspan="3">
             <p style="text-align: center;">No comments available.</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div class="card-container new-comment">
+                <mat-card>
+                    <mat-card-header>New comment:</mat-card-header>
+                    <mat-card-content>
+                        <!--<input type="text" placeholder="What's in your mind?">-->
+                        <textarea name="comment" id="comment" rows="5" [(ngModel)]="commentText"></textarea>
+                    </mat-card-content>
+                    <mat-card-actions><button type="submit" (click)="addComment()">Submit</button></mat-card-actions>
+                </mat-card>
+            </div>
         </td>
     </tr>
 </ng-template>
