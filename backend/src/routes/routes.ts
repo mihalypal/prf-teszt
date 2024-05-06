@@ -6,6 +6,7 @@ import { Topic } from '../model/Topic';
 import { Comment } from '../model/Comment';
 import { json } from 'body-parser';
 import { UsersLikesComment } from '../model/UsersLikesComment';
+import { UsersLikesTopic } from '../model/UsersLikesTopic';
 
 export const configureRoutes = (passport: PassportStatic, router: Router): Router => {    
 
@@ -27,7 +28,7 @@ export const configureRoutes = (passport: PassportStatic, router: Router): Route
                     req.login(user, (err: string | null) => {
                         if (err) {
                             console.log(err);
-                            res.status(500).send('Internal server errror.');
+                            res.status(500).send('Internal server error.');
                         } else {
                             console.log('Successful login.');
                             res.status(200).send(user);
@@ -221,15 +222,50 @@ export const configureRoutes = (passport: PassportStatic, router: Router): Route
     });
 
     // Like Topic
-    router.post('/like_topic/:topicId', async (req: Request, res: Response) => {
-        res.status(404).send('Now way to like a topic yet.')
-        // TODO like topic
+    router.put('/like_topic/:topicId', async (req: Request, res: Response) => {
+        const { topicId } = req.params;
+
+        if (req.isAuthenticated()) {
+            const username = new UsersLikesTopic({ username: req.user.email });
+            const topic = await Topic.findById(topicId);
+            if (topic) {
+                if (topic.usersLikesTopic.includes(username)) {
+                    res.status(400).send('User already liked this topic.');
+                } else {
+                    topic.usersLikesTopic.push(username);
+                    await topic.save();
+                    res.status(200).send(topic);
+                }
+            } else {
+                res.status(404).send('Topic not found.');
+            }
+        } else {
+            res.status(500).send('User is not logged in.');
+        }
     });
 
     // Dislike Topic
-    router.post('/dislike_topic/:topicId', async (req: Request, res: Response) => {
-        res.status(404).send('Now way to dislike a topic yet.')
-        // TODO dislike topic
+    router.put('/dislike_topic/:topicId', async (req: Request, res: Response) => {
+        const { topicId } = req.params;
+
+        if (req.isAuthenticated()) {
+            const username = new UsersLikesTopic({ username: req.user.email });
+            const topic = await Topic.findById(topicId);
+            if (topic) {
+                const index = topic.usersLikesTopic.findIndex(user => user.username === username.username);
+                if (index !== -1) {
+                    topic.usersLikesTopic.splice(index, 1);
+                    await topic.save();
+                    res.status(200).send(topic);
+                } else {
+                    res.status(400).send('User has not liked this topic.');
+                }
+            } else {
+                res.status(404).send('Topic not found.');
+            }
+        } else {
+            res.status(500).send('User is not logged in.');
+        }
     });
 
     // Comment endpoints

@@ -26,7 +26,11 @@ export class TopicViewComponent {
   constructor(private authService: AuthService, private topicService: TopicService, private route: ActivatedRoute) { }
   topicSubscription = 
   this.topicService.getTopic(this.route.snapshot.paramMap.get('id')!).subscribe(
-    (data) => { this.topic = data; this.comments = data.comments as unknown as Comment[]; console.log(data);
+    (data) => {
+      this.topic = data;
+      this.comments = data.comments as unknown as Comment[];
+      this.comments?.forEach(comment => { comment.comment = comment.comment.replace(/\n/g, '<br>'); });
+      console.log(data);
     }, (err) => { console.log(err); }
   );
 
@@ -46,7 +50,32 @@ export class TopicViewComponent {
       next: (data) => {
         this.topic = data;
         this.comments = data.comments as unknown as Comment[];
+        this.comments?.forEach(comment => { comment.comment = comment.comment.replace(/\n/g, '<br>'); });
         console.log(data);
+      }, error: (err) => {
+        console.log(err);
+      }
+    });
+  }
+
+  likeTopic(topicId: string) {
+    this.topicService.likeTopic(this.topic!._id).subscribe({
+      next: (data) => {
+        console.log(data);
+        this.topic = data;
+        //this.updateTopic();
+      }, error: (err) => {
+        console.log(err);
+      }
+    });
+  }
+
+  dislikeTopic(topicId: string) {
+    this.topicService.dislikeTopic(this.topic!._id).subscribe({
+      next: (data) => {
+        console.log(data);
+        this.topic = data;
+        //this.updateTopic();
       }, error: (err) => {
         console.log(err);
       }
@@ -58,6 +87,7 @@ export class TopicViewComponent {
       this.topicService.addComment(this.topic!._id, this.commentText).subscribe({
         next: (data) => {
           console.log(data);
+          data.comment = data.comment.replace(/\n/g, '<br>');
           this.comments?.push(data as any as Comment);
           this.commentText = '';
         }, error: (err) => {
@@ -106,7 +136,12 @@ export class TopicViewComponent {
     });
   }
 
-  hasUserLiked(comment: Comment): boolean {
+  hasUserLikedTopic(topic: Topic): boolean {
+    if (topic.usersLikesTopic && topic.usersLikesTopic.length === 0) return false;
+    return topic.usersLikesTopic.some(user => user.username === this.currentUser?.email);
+  }
+
+  hasUserLikedComment(comment: Comment): boolean {
     return comment.usersLikesComment.some(user => user.username === this.currentUser?.email);
   }
 

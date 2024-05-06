@@ -12,7 +12,7 @@
             <button type="button" (click)="navigate('/signup')">Sign up</button>
         </div>
         <div *ngIf="errorMessage">
-            <p>{{errorMessage}}</p>
+            <p style="color: red">{{errorMessage}}</p>
         </div>
         <div class="overlay" *ngIf="isLoading">
             <mat-spinner></mat-spinner>

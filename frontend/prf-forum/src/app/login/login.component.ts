@@ -48,10 +48,12 @@ export class LoginComponent {
           }
         }, error: (err) => {
           console.log(err);
+          this.errorMessage = 'Invalid email or password';
+          this.isLoading = false;
         },
       })
     } else {
-      this.errorMessage = 'Form is empty';
+      this.errorMessage = 'Missing credentials';
       this.isLoading = false;
     }
   }

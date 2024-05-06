@@ -1,22 +1,25 @@
-<div class="table-container" *ngIf="users && users.length; else noUsersTemplate">
-    <table>
-        <thead>
-            <tr>
-                <th>Email</th>
-                <th>Name</th>
-                <th>Address</th>
-                <th>Nickname</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let user of users">
-                <td>{{user.email}}</td>
-                <td>{{user.name}}</td>
-                <td>{{user.address}}</td>
-                <td>{{user.nickname}}</td>
-            </tr>
-        </tbody>
-    </table>
+<div class="user-management-container">
+    <div class="table-container" *ngIf="users && users.length; else noUsersTemplate">
+        <h1>Users</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Email</th>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>Nickname</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let user of users">
+                    <td>{{user.email}}</td>
+                    <td>{{user.name}}</td>
+                    <td>{{user.address}}</td>
+                    <td>{{user.nickname}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 <ng-template #noUsersTemplate>
     <p>No users available.</p>

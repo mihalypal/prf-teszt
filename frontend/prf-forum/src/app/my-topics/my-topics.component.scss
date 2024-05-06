@@ -8,7 +8,6 @@ table {
 th, td {
     text-align: left;
     padding: 8px;
-    height: 35px;
 }
 
 th {
@@ -71,4 +70,15 @@ button[type="reset"] {
 
 button[type="reset"]:hover {
     background-color: rgb(68, 100, 158);
+}
+
+.my-topics-container {
+    margin: 80px;
+}
+
+.disable {
+    background-color: #7d7d7d !important;
+    &:hover {
+        background-color: #4a4a4a !important;
+    }
 }

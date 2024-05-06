@@ -17,3 +17,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 app-login {
   overflow: hidden;
 }
+
+.no-data {
+  text-align: center;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  font-size: 1.5em;
+}

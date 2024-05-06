@@ -3,11 +3,12 @@ import { TopicService } from '../shared/services/topic.service';
 import { CommonModule } from '@angular/common';
 import { Topic } from '../shared/Model/Topic';
 import { FormsModule } from '@angular/forms';
+import {MatIconModule} from '@angular/material/icon';
 
 @Component({
   selector: 'app-my-topics',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatIconModule],
   templateUrl: './my-topics.component.html',
   styleUrl: './my-topics.component.scss'
 })

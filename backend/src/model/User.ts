@@ -43,10 +43,10 @@ UserSchema.pre<IUser>('save', function(next) {
 UserSchema.methods.comparePassword = function(candidatePassword: string, callback: (error: Error | null, isMatch: boolean) => void): void {
     const user = this;
     bcrypt.compare(candidatePassword, user.password, (error, isMatch) => {
-        if (error) {
-            callback(error, false);
+        if (!isMatch) {
+            callback(new Error('Password does not match'), false);
         }
-        callback(null, isMatch);
+        else callback(null, isMatch);
     });
 }
 

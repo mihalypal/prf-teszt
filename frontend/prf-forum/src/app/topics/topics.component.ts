@@ -4,14 +4,14 @@ import { Router } from '@angular/router';
 import { Topic } from '../shared/Model/Topic';
 import { TopicService } from '../shared/services/topic.service';
 import { CommonModule } from '@angular/common';
-import { catchError, map, of } from 'rxjs';
-import { authGuard } from '../shared/guards/auth.guard';
 import { InputFieldsComponent } from './input-fields/input-fields.component';
+import {MatIconModule} from '@angular/material/icon';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-topics',
   standalone: true,
-  imports: [CommonModule, InputFieldsComponent],
+  imports: [CommonModule, InputFieldsComponent, MatIconModule, FormsModule],
   templateUrl: './topics.component.html',
   styleUrl: './topics.component.scss'
 })
@@ -19,6 +19,9 @@ export class TopicsComponent {
   topics?: Topic[];
   isAuthenticated?: boolean;
   isAdmin?: boolean;
+  isEditMode: boolean = false;
+  selectedTopicToEdit: string = '';
+  editedTitle: string = '';
 
   constructor(private topicService: TopicService, private authService: AuthService, private router: Router) { }
 
@@ -69,6 +72,44 @@ export class TopicsComponent {
         console.log(err);
       }
     });
+  }
+  
+  editModeToggle(topicId: string) {
+    this.isEditMode = !this.isEditMode;
+    if (this.isEditMode) {
+      this.selectedTopicToEdit = topicId;
+      this.editedTitle = this.topics!.find(topic => topic._id === topicId)!.title;
+    } else {
+      this.selectedTopicToEdit = '';
+      this.editedTitle = '';
+    }
+  }
+
+  editModeOff() {
+    this.isEditMode = false;
+    this.selectedTopicToEdit = '';
+    this.editedTitle = '';
+  }
+
+  editTopic(topicId: string) {
+    if (this.topics!.find(topic => topic._id === topicId)!.title !== this.editedTitle) {
+      this.topicService.editTopic(topicId, this.editedTitle).subscribe({
+        next: (data) => {
+          console.log(data);
+          this.topics = this.topics!.map(topic => {
+            if (topic._id === topicId) {
+              topic.title = this.editedTitle;
+            }
+            return topic;
+          });
+          this.editModeOff();
+        }, error: (err) => {
+          console.log(err);
+        }
+      });
+    } else {
+      this.editModeOff();
+    }
   }
 
   recieveTopic(event: any) {

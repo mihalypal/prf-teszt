@@ -70,4 +70,12 @@ export class TopicService {
   dislikeComment(topicId: string, commentId: string) {
     return this.http.put<Topic>(`http://localhost:3000/app/dislike_comment/${topicId}/${commentId}`, {}, {withCredentials: true});
   }
+
+  likeTopic(topicId: string) {
+    return this.http.put<Topic>(`http://localhost:3000/app/like_topic/${topicId}`, {}, {withCredentials: true});
+  }
+
+  dislikeTopic(topicId: string) {
+    return this.http.put<Topic>(`http://localhost:3000/app/dislike_topic/${topicId}`, {}, {withCredentials: true});
+  }
 }

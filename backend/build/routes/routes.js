@@ -14,6 +14,7 @@ const User_1 = require("../model/User");
 const Topic_1 = require("../model/Topic");
 const Comment_1 = require("../model/Comment");
 const UsersLikesComment_1 = require("../model/UsersLikesComment");
+const UsersLikesTopic_1 = require("../model/UsersLikesTopic");
 const configureRoutes = (passport, router) => {
     router.get('/', (req, res) => {
         res.write('The server is available at the moment.');
@@ -34,7 +35,7 @@ const configureRoutes = (passport, router) => {
                     req.login(user, (err) => {
                         if (err) {
                             console.log(err);
-                            res.status(500).send('Internal server errror.');
+                            res.status(500).send('Internal server error.');
                         }
                         else {
                             console.log('Successful login.');
@@ -224,14 +225,53 @@ const configureRoutes = (passport, router) => {
         }
     }));
     // Like Topic
-    router.post('/like_topic/:topicId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        res.status(404).send('Now way to like a topic yet.');
-        // TODO like topic
+    router.put('/like_topic/:topicId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const { topicId } = req.params;
+        if (req.isAuthenticated()) {
+            const username = new UsersLikesTopic_1.UsersLikesTopic({ username: req.user.email });
+            const topic = yield Topic_1.Topic.findById(topicId);
+            if (topic) {
+                if (topic.usersLikesTopic.includes(username)) {
+                    res.status(400).send('User already liked this topic.');
+                }
+                else {
+                    topic.usersLikesTopic.push(username);
+                    yield topic.save();
+                    res.status(200).send(topic);
+                }
+            }
+            else {
+                res.status(404).send('Topic not found.');
+            }
+        }
+        else {
+            res.status(500).send('User is not logged in.');
+        }
     }));
     // Dislike Topic
-    router.post('/dislike_topic/:topicId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        res.status(404).send('Now way to dislike a topic yet.');
-        // TODO dislike topic
+    router.put('/dislike_topic/:topicId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const { topicId } = req.params;
+        if (req.isAuthenticated()) {
+            const username = new UsersLikesTopic_1.UsersLikesTopic({ username: req.user.email });
+            const topic = yield Topic_1.Topic.findById(topicId);
+            if (topic) {
+                const index = topic.usersLikesTopic.findIndex(user => user.username === username.username);
+                if (index !== -1) {
+                    topic.usersLikesTopic.splice(index, 1);
+                    yield topic.save();
+                    res.status(200).send(topic);
+                }
+                else {
+                    res.status(400).send('User has not liked this topic.');
+                }
+            }
+            else {
+                res.status(404).send('Topic not found.');
+            }
+        }
+        else {
+            res.status(500).send('User is not logged in.');
+        }
     }));
     // Comment endpoints
     // My comments in the topics

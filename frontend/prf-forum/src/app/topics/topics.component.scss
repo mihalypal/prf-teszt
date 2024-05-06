@@ -1,6 +1,9 @@
 table {
     width: 100%;
+    max-width: 1000px;
     margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 th, td {
@@ -19,6 +22,15 @@ tr:nth-child(even) {
 
 .table-container {
     margin: 100px 20px;
+}
+
+input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    outline: none;
+    width: max-content;
+    width: 96%;
 }
 
 .buttons {
@@ -49,6 +61,28 @@ button:hover {
     &:hover {
         text-decoration: underline;
         animation: gradient-in .3s forwards;
+    }
+}
+
+.actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.edit-button {
+    background-color: cornflowerblue;
+}
+
+.edit-button:hover {
+    background-color: rgb(71, 103, 163);
+}
+
+.disable {
+    background-color: #7d7d7d;
+    &:hover {
+        background-color: #4a4a4a;
     }
 }
 

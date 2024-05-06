@@ -2,6 +2,7 @@ import { CommonModule, Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../shared/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-signup',
@@ -13,7 +14,10 @@ import { AuthService } from '../shared/services/auth.service';
 export class SignupComponent implements OnInit {
   signupForm!: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private location: Location, private authService: AuthService) { }
+  constructor(private formBuilder: FormBuilder,
+              private location: Location,
+              private authService: AuthService,
+              private router: Router) { }
 
   ngOnInit() {
     this.signupForm = this.formBuilder.group({
@@ -51,6 +55,7 @@ export class SignupComponent implements OnInit {
       this.authService.register(this.signupForm.value).subscribe({
         next: (data) => {
           console.log(data);
+          this.router.navigateByUrl('/login');
         }, error: (err) => {
           console.log(err);
         }
