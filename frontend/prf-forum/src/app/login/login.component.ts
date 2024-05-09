@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../shared/services/auth.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
@@ -29,8 +29,9 @@ export class LoginComponent {
   errorMessage: string = '';
   isLoading = false;
   showPassword = false;
+  id = this.route.snapshot.paramMap.get('id');
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(private router: Router, private authService: AuthService, private route: ActivatedRoute) {}
 
   ngOnInit() {
     this.authService.checkAuth().subscribe({
@@ -56,7 +57,11 @@ export class LoginComponent {
             this.authService.changeAuthStatus(true);
             this.authService.changeAdminStatus(data.isAdmin);
             this.isLoading = false;
-            this.navigate('/topics');
+            if (this.id) {
+              this.navigate(`/topic/${this.id}`);
+            } else {
+              this.navigate('/topics');
+            }
           }
         }, error: (err) => {
           console.log(err);

@@ -9,10 +9,15 @@
                         <mat-card-actions *ngIf="currentUser">
                             <mat-icon *ngIf="!topic?.usersLikesTopic || !hasUserLikedTopic(topic!)" (click)="likeTopic(topic!._id)" fontIcon="thumb_up"></mat-icon>
                             <mat-icon *ngIf="!topic?.usersLikesTopic || hasUserLikedTopic(topic!)" (click)="dislikeTopic(topic!._id)" fontIcon="thumb_down"></mat-icon>
-                            <span  *ngIf="hasUserLikedTopic(topic!)">You <span *ngIf="topic!.usersLikesTopic.length > 1">and {{topic!.usersLikesTopic.length - 1}} </span>liked this</span>
-                            <span  *ngIf="!hasUserLikedTopic(topic!)"><span *ngIf="topic!.usersLikesTopic.length > 0">{{topic!.usersLikesTopic.length}} </span>liked this</span>
                         </mat-card-actions>
-                        <mat-card-footer><hr>{{topic?.timestamp | date: 'yyyy.MM.dd HH:mm' }}</mat-card-footer>
+                        <mat-card-footer>
+                            <hr>
+                            <div>
+                                <span>{{topic?.timestamp | date: 'yyyy.MM.dd HH:mm' }}</span>
+                                <span  *ngIf="hasUserLikedTopic(topic!)">You <span *ngIf="topic!.usersLikesTopic.length > 1">and {{topic!.usersLikesTopic.length - 1}} </span>liked this</span>
+                                <span  *ngIf="!hasUserLikedTopic(topic!)"><span *ngIf="topic!.usersLikesTopic.length > 0">{{topic!.usersLikesTopic.length}} liked this</span></span>
+                            </div>
+                        </mat-card-footer>
                     </mat-card>
                 </div>
             </tr>
@@ -34,18 +39,25 @@
                             <mat-card-actions *ngIf="currentUser">
                                 <div>
                                     <mat-icon (click)="likeComment(comment._id)" fontIcon="thumb_up" *ngIf="!hasUserLikedComment(comment)">asd</mat-icon>
-                                    <span  *ngIf="!hasUserLikedComment(comment) && comment.usersLikesComment.length > 0">{{comment.usersLikesComment.length}} liked this</span>
+                                    
                                     <mat-icon (click)="dislikeComment(comment._id)" fontIcon="thumb_down" *ngIf="hasUserLikedComment(comment)"></mat-icon>
-                                    <span  *ngIf="hasUserLikedComment(comment)">You <span *ngIf="comment.usersLikesComment.length > 1">and {{comment.usersLikesComment.length - 1}} </span>liked this</span>
+                                    
                                 </div>
                                 <div>
-                                    <mat-icon (click)="deleteComment(comment._id)" fontIcon="delete" id="delete-icon" *ngIf="currentUser?.email === comment.author || currentUser?.isAdmin"></mat-icon>
                                     <mat-icon (click)="editModeToggle(comment._id)" *ngIf="!editMode && (currentUser?.email === comment.author || currentUser?.isAdmin)" fontIcon="edit"></mat-icon>
                                     <mat-icon (click)="editComment(comment._id)" *ngIf="editMode && comment._id === selectedCommentToEdit" fontIcon="check" class="check"></mat-icon>
                                     <mat-icon (click)="editModeToggle(comment._id)" *ngIf="editMode && comment._id === selectedCommentToEdit" fontIcon="cancel" class="cancel"></mat-icon>
+                                    <mat-icon (click)="deleteComment(comment._id)" fontIcon="delete" id="delete-icon" *ngIf="currentUser?.email === comment.author || currentUser?.isAdmin"></mat-icon>
                                 </div>
                             </mat-card-actions>
-                            <mat-card-footer><hr>{{comment.timestamp | date: 'yyyy.MM.dd HH:mm' }}</mat-card-footer>
+                            <mat-card-footer>
+                                <hr>
+                                <div>
+                                    <span>{{comment.timestamp | date: 'yyyy.MM.dd HH:mm' }}</span>
+                                    <span  *ngIf="!hasUserLikedComment(comment) && comment.usersLikesComment.length > 0">{{comment.usersLikesComment.length}} liked this</span>
+                                    <span  *ngIf="hasUserLikedComment(comment)">You <span *ngIf="comment.usersLikesComment.length > 1">and {{comment.usersLikesComment.length - 1}} </span>liked this</span>
+                                </div>
+                            </mat-card-footer>
                         </mat-card>
                     </div>
                 </td>
@@ -53,7 +65,7 @@
             <tr *ngIf="!currentUser">
                 <td colspan="3" style="box-shadow: none;">
                     <div class="no-data">
-                        <p style="text-align: center;">If you'd like to post a comment, please <span class="navigate" (click)="navigate('/login')">log in</span>.</p>
+                        <p style="text-align: center;">If you'd like to post a comment, please <span class="navigate" (click)="navigate('/login/' + topic!._id)">log in</span>.</p>
                     </div>
                 </td>
             </tr>
@@ -61,7 +73,7 @@
                 <td>
                     <div class="card-container new-comment">
                         <mat-card>
-                            <mat-card-header>New comment:</mat-card-header>
+                            <mat-card-header>New comment</mat-card-header>
                             <mat-card-content>
                                 <!--<input type="text" placeholder="What's in your mind?">-->
                                 <textarea name="comment" id="comment" rows="5" [(ngModel)]="commentText"></textarea>
@@ -87,7 +99,7 @@
     <tr *ngIf="!currentUser">
         <td colspan="3" style="box-shadow: none;">
             <div class="no-data">
-                <p style="text-align: center;">If you'd like to post a comment, please <span class="navigate" (click)="navigate('/login')">log in</span>.</p>
+                <p style="text-align: center;">If you'd like to post a comment, please <span class="navigate" (click)="navigate('/login/' + topic!._id)">log in</span>.</p>
             </div>
         </td>
     </tr>
@@ -95,7 +107,7 @@
         <td>
             <div class="card-container new-comment">
                 <mat-card>
-                    <mat-card-header>New comment:</mat-card-header>
+                    <mat-card-header>New comment</mat-card-header>
                     <mat-card-content>
                         <!--<input type="text" placeholder="What's in your mind?">-->
                         <textarea name="comment" id="comment" rows="5" [(ngModel)]="commentText"></textarea>

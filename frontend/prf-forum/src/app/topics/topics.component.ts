@@ -51,17 +51,6 @@ export class TopicsComponent {
     });
   }
 
-  logout() {
-    this.authService.logout().subscribe({
-      next: (data) => {
-        console.log(data);
-        this.router.navigateByUrl('/login');
-      }, error: (error) => {
-        console.log(error);
-      }
-    });
-  }
-
   deleteTopic(topicId: string) {
     this.topicService.deleteTopic(topicId).subscribe({
       next: (data) => {

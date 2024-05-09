@@ -113,7 +113,7 @@ mat-card-actions {
 .topic-table mat-card-actions {
     padding: 10px 10px 0;
     display: flex;
-    justify-content: end;
+    justify-content: space-between;
     min-height: 24px !important;
 }
 
@@ -138,8 +138,15 @@ mat-card-footer {
     padding: 0 5px 5px;
 }
 
+mat-card-footer div {
+    display: flex;
+    justify-content: space-between;
+}
+
 .new-comment mat-card-header {
     background-color: rgb(76, 111, 176);
+    color: white;
+    font-weight: 500;
 }
 
 .new-comment input {

@@ -196,8 +196,8 @@ export class TopicViewComponent {
   }
 
   hasUserLikedTopic(topic: Topic): boolean {
-    if (!topic.usersLikesTopic) return false;
-    if (topic.usersLikesTopic && topic.usersLikesTopic.length === 0) return false;
+    if (!topic!.usersLikesTopic) return false;
+    if (topic!.usersLikesTopic && topic.usersLikesTopic.length === 0) return false;
     return topic.usersLikesTopic.some(user => user.username === this.currentUser?.email);
   }
 
@@ -206,7 +206,10 @@ export class TopicViewComponent {
   }
 
   navigate(to: string) {
+    console.log(to);
+    
     this.router.navigateByUrl(to);
+    //this.router.navigateByUrl('/login');
   }
 
 }
