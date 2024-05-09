@@ -32,6 +32,18 @@ export class LoginComponent {
 
   constructor(private router: Router, private authService: AuthService) {}
 
+  ngOnInit() {
+    this.authService.checkAuth().subscribe({
+      next: (data) => {
+        if (data) {
+          this.navigate('/topics');
+        }
+      }, error: (err) => {
+        console.log(err);
+      }
+    });
+  }
+
   login() {
     this.isLoading = true;
     if (this.email && this.password) {

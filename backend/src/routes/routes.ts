@@ -134,13 +134,24 @@ export const configureRoutes = (passport: PassportStatic, router: Router): Route
     // One specific Topic
     router.get('/topic/:topicId', async (req: Request, res: Response) => {
         const { topicId } = req.params;
-        const topic = await Topic.findById(topicId);
+        try {
+            const topic = await Topic.findById(topicId);
+            if (topic) {
+                console.log('Specific topic found.');
+                res.status(200).send(topic);
+            } else {
+                res.status(404).send('Topic not found.');
+            }
+        } catch (error) {
+            res.status(500).send('Internal server error.');
+        }
+        /*const topic = await Topic.findById(topicId);
         if (topic) {
             console.log('Specific topic found.');
             res.status(200).send(topic);
         } else {
             res.status(404).send('Topic not found.');
-        }
+        }*/
     });
 
     // All Topics
@@ -336,15 +347,15 @@ export const configureRoutes = (passport: PassportStatic, router: Router): Route
     });
 
     // Edit comment
-    router.post('/edit_comment/:topicId/:commentId', async (req: Request, res: Response) => {
+    router.put('/edit_comment/:topicId/:commentId', async (req: Request, res: Response) => {
         const { topicId, commentId } = req.params;
-        const { author, comment } = req.body;
+        const { comment } = req.body;
 
         const topic = await Topic.findById(topicId);
         if (topic) {
             const updatedTopic = await Topic.findOneAndUpdate(
                 { _id: topicId, 'comments._id': commentId },
-                { $set: { 'comments.$.author': author, 'comments.$.comment': comment } },
+                { $set: { 'comments.$.comment': comment } },
                 { new: true }
             );
             res.status(200).send('Comment successfully edited.');

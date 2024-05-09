@@ -142,14 +142,26 @@ const configureRoutes = (passport, router) => {
     // One specific Topic
     router.get('/topic/:topicId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { topicId } = req.params;
-        const topic = yield Topic_1.Topic.findById(topicId);
+        try {
+            const topic = yield Topic_1.Topic.findById(topicId);
+            if (topic) {
+                console.log('Specific topic found.');
+                res.status(200).send(topic);
+            }
+            else {
+                res.status(404).send('Topic not found.');
+            }
+        }
+        catch (error) {
+            res.status(500).send('Internal server error.');
+        }
+        /*const topic = await Topic.findById(topicId);
         if (topic) {
             console.log('Specific topic found.');
             res.status(200).send(topic);
-        }
-        else {
+        } else {
             res.status(404).send('Topic not found.');
-        }
+        }*/
     }));
     // All Topics
     router.get('/all_topics', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -333,12 +345,12 @@ const configureRoutes = (passport, router) => {
         }
     }));
     // Edit comment
-    router.post('/edit_comment/:topicId/:commentId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    router.put('/edit_comment/:topicId/:commentId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { topicId, commentId } = req.params;
-        const { author, comment } = req.body;
+        const { comment } = req.body;
         const topic = yield Topic_1.Topic.findById(topicId);
         if (topic) {
-            const updatedTopic = yield Topic_1.Topic.findOneAndUpdate({ _id: topicId, 'comments._id': commentId }, { $set: { 'comments.$.author': author, 'comments.$.comment': comment } }, { new: true });
+            const updatedTopic = yield Topic_1.Topic.findOneAndUpdate({ _id: topicId, 'comments._id': commentId }, { $set: { 'comments.$.comment': comment } }, { new: true });
             res.status(200).send('Comment successfully edited.');
         }
         else {

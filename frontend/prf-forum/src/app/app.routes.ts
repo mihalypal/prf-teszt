@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './shared/guards/auth.guard';
 import { adminGuard } from './shared/guards/admin.guard';
-import { authChildGuard } from './shared/guards/auth-child.guard';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -11,5 +10,5 @@ export const routes: Routes = [
     { path: 'topic/:id', loadComponent: () => import('./topic-view/topic-view.component').then((c) => c.TopicViewComponent) },
     { path: 'my-topics', loadComponent: () => import('./my-topics/my-topics.component').then((c) => c.MyTopicsComponent), canActivate: [authGuard] },
     { path: 'user-management', loadComponent: () => import('./user-management/user-management.component').then((c) => c.UserManagementComponent), canActivate: [authGuard, adminGuard] },
-    { path: '**', redirectTo: 'login' }
+    { path: '**', redirectTo: 'topics' }
 ];

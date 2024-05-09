@@ -29,8 +29,7 @@ input {
     border: 1px solid #ddd;
     border-radius: 5px;
     outline: none;
-    width: max-content;
-    width: 96%;
+    width: 97%;
 }
 
 .buttons {
@@ -77,6 +76,14 @@ button:hover {
 
 .edit-button:hover {
     background-color: rgb(71, 103, 163);
+}
+
+.check-button {
+    background-color: #6cd46f;
+}
+
+.check-button:hover {
+    background-color: #4a8f3d;
 }
 
 .disable {

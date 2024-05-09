@@ -20,7 +20,7 @@
                         <button class="buttons" *ngIf="!isEditMode" (click)="deleteTopic(topic._id)"><mat-icon fontIcon="delete"></mat-icon></button>
                         <button class="buttons disable" *ngIf="isEditMode && topic._id !== selectedTopicToEdit" (click)="editModeOff()" type="reset"><mat-icon fontIcon="edit"></mat-icon></button>
                         <button class="buttons disable" *ngIf="isEditMode && topic._id !== selectedTopicToEdit" (click)="editModeOff()"><mat-icon fontIcon="delete"></mat-icon></button>
-                        <button class="buttons" *ngIf="isEditMode && topic._id === selectedTopicToEdit" (click)="editTopic(topic._id)" type="reset"><mat-icon fontIcon="check"></mat-icon></button>
+                        <button class="buttons check" *ngIf="isEditMode && topic._id === selectedTopicToEdit" (click)="editTopic(topic._id)" type="reset"><mat-icon fontIcon="check"></mat-icon></button>
                         <button class="buttons" *ngIf="isEditMode && topic._id === selectedTopicToEdit" (click)="editModeToggle(topic._id)"><mat-icon fontIcon="cancel"></mat-icon></button>
                     </td>
                 </tr>

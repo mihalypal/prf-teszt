@@ -99,8 +99,15 @@ mat-card-content {
 }
 
 mat-card-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 10px 10px 0;
     min-height: 24px !important;
+    div {
+        display: flex;
+        align-items: center;
+    }
 }
 
 .topic-table mat-card-actions {
@@ -162,4 +169,33 @@ mat-card-footer {
 
 .my-comment {
     background-color: rgb(68, 217, 237);
+}
+
+.navigate {
+    color: cornflowerblue;
+    text-decoration: underline;
+    cursor: pointer;
+    &:hover {
+        color: rgb(70, 102, 162);
+    }
+}
+
+.script-detected {
+    color: red;
+}
+
+.check {
+    color: white;
+    background-color: #6cd46f !important;
+    &:hover {
+        background-color: #4a9e4a !important;
+    }
+}
+
+.cancel {
+    color: white;
+    background-color: red !important;
+    &:hover {
+        background-color: rgb(158, 68, 68) !important;
+    }
 }

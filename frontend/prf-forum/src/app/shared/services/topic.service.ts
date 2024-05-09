@@ -59,6 +59,17 @@ export class TopicService {
     return this.http.post<Comment>(`http://localhost:3000/app/new_comment/${topicId}`, body, {headers: headers, withCredentials: true});
   }
 
+  editComment(topicId: string, commentId: string, comment: string) {
+    const body = new URLSearchParams();
+    body.set('comment', comment);
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+
+    return this.http.put(`http://localhost:3000/app/edit_comment/${topicId}/${commentId}`, body, {headers: headers, withCredentials: true, responseType: 'text'});
+  }
+
   deleteComment(topicId: string, commentId: string) {
     return this.http.delete(`http://localhost:3000/app/delete_comment/${topicId}/${commentId}`, {withCredentials: true, responseType: 'text'});
   }

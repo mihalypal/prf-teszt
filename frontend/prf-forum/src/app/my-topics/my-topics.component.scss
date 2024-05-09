@@ -55,7 +55,7 @@ input {
     border: 1px solid #ddd;
     border-radius: 5px;
     outline: none;
-    width: max-content;
+    width: 97%;
 }
 
 .modification-buttons {
@@ -70,6 +70,14 @@ button[type="reset"] {
 
 button[type="reset"]:hover {
     background-color: rgb(68, 100, 158);
+}
+
+.check {
+    background-color: #6cd46f !important;
+}
+
+.check:hover {
+    background-color: #4a9e4a !important;
 }
 
 .my-topics-container {
