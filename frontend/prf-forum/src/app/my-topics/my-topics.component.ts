@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import { Topic } from '../shared/Model/Topic';
 import { FormsModule } from '@angular/forms';
 import {MatIconModule} from '@angular/material/icon';
+import { DialogComponent } from '../shared/components/dialog/dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-my-topics',
@@ -18,7 +20,8 @@ export class MyTopicsComponent {
   selectedTopicToEdit: string = '';
   editedTitle: string = '';
 
-  constructor(private topicService: TopicService) { }
+  constructor(private topicService: TopicService,
+              private dialog: MatDialog) { }
 
   ngOnInit() {
     this.topicService.getUserTopics().subscribe({
@@ -31,13 +34,18 @@ export class MyTopicsComponent {
   }
 
   deleteTopic(topicId: string) {
-    this.topicService.deleteTopic(topicId).subscribe({
-      next: (data) => {
-        console.log(data);
-        this.topics = this.topics!.filter(topic => topic._id !== topicId);
-      },
-      error: (err) => {
-        console.log(err);
+    const dialogRef = this.dialog.open(DialogComponent, { data: { message: 'topic' } });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.topicService.deleteTopic(topicId).subscribe({
+          next: (data) => {
+            console.log(data);
+            this.topics = this.topics!.filter(topic => topic._id !== topicId);
+          },
+          error: (err) => {
+            console.log(err);
+          }
+        });
       }
     });
   }

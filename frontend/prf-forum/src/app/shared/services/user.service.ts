@@ -12,4 +12,8 @@ export class UserService {
   getAll() {
     return this.http.get<User[]>('http://localhost:3000/app/getAllUsers', {withCredentials: true});
   }
+
+  deleteUser(userId: string) {
+    return this.http.delete(`http://localhost:3000/app/delete_user/${userId}`, {withCredentials: true, responseType: 'text'});
+  }
 }

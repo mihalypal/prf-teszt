@@ -98,6 +98,12 @@ mat-card-content {
     padding: 15px;
 }
 
+::ng-deep img {
+        display: block !important;
+        margin: auto !important;
+        max-width: 500px !important;
+}
+
 mat-card-actions {
     display: flex;
     justify-content: space-between;
@@ -135,7 +141,7 @@ mat-icon:hover {
 }
 
 mat-card-footer {
-    padding: 0 5px 5px;
+    padding: 0 15px 5px;
 }
 
 mat-card-footer div {

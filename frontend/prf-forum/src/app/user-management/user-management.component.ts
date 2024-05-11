@@ -4,18 +4,26 @@ import { User } from '../shared/Model/User';
 import { UserService } from '../shared/services/user.service';
 import { AuthService } from '../shared/services/auth.service';
 import { Router } from '@angular/router';
+import { MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { DialogComponent } from '../shared/components/dialog/dialog.component';
 
 @Component({
   selector: 'app-user-management',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatTableModule, MatIconModule, MatDialogModule],
   templateUrl: './user-management.component.html',
   styleUrl: './user-management.component.scss'
 })
 export class UserManagementComponent {
-  users?: User[];
+  users!: User[];
+  columns = ['email', 'name', 'address', 'nickname', 'isAdmin', 'delete'];
 
-  constructor(private userService: UserService, private authService: AuthService, private router: Router) {}
+  constructor(private userService: UserService,
+              private authService: AuthService,
+              private router: Router,
+              private dialog: MatDialog) {}
 
   ngOnInit() {
     this.userService.getAll().subscribe({
@@ -27,7 +35,23 @@ export class UserManagementComponent {
     });
   }
 
-  logout() {
+  deleteUser(userId: string) {
+    const dialogRef = this.dialog.open(DialogComponent, {data: { message: 'user' } });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.userService.deleteUser(userId).subscribe({
+          next: (data) => {
+            console.log(data);
+            this.users = this.users.filter(user => user._id !== userId);
+          }, error: (err) => {
+            console.log(err);
+          }
+        });
+      }
+    });
+  }
+
+  /*logout() {
     this.authService.logout().subscribe({
       next: (data) => {
         console.log(data);
@@ -36,5 +60,5 @@ export class UserManagementComponent {
         console.log(error);
       }
     });
-  }
+  }*/
 }

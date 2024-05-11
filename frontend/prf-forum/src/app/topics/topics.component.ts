@@ -7,11 +7,13 @@ import { CommonModule } from '@angular/common';
 import { InputFieldsComponent } from './input-fields/input-fields.component';
 import {MatIconModule} from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { DialogComponent } from '../shared/components/dialog/dialog.component';
 
 @Component({
   selector: 'app-topics',
   standalone: true,
-  imports: [CommonModule, InputFieldsComponent, MatIconModule, FormsModule],
+  imports: [CommonModule, InputFieldsComponent, MatIconModule, FormsModule, MatDialogModule],
   templateUrl: './topics.component.html',
   styleUrl: './topics.component.scss'
 })
@@ -23,7 +25,10 @@ export class TopicsComponent {
   selectedTopicToEdit: string = '';
   editedTitle: string = '';
 
-  constructor(private topicService: TopicService, private authService: AuthService, private router: Router) { }
+  constructor(private topicService: TopicService,
+              private authService: AuthService,
+              private router: Router,
+              private dialog: MatDialog) { }
 
   ngOnInit() {
     this.topicService.getAll().subscribe({
@@ -52,13 +57,18 @@ export class TopicsComponent {
   }
 
   deleteTopic(topicId: string) {
-    this.topicService.deleteTopic(topicId).subscribe({
-      next: (data) => {
-        console.log(data);
-        this.topics = this.topics!.filter(topic => topic._id !== topicId);
-      },
-      error: (err) => {
-        console.log(err);
+    const dialogRef = this.dialog.open(DialogComponent, {data: { message: 'topic' } });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.topicService.deleteTopic(topicId).subscribe({
+          next: (data) => {
+            console.log(data);
+            this.topics = this.topics!.filter(topic => topic._id !== topicId);
+          },
+          error: (err) => {
+            console.log(err);
+          }
+        });
       }
     });
   }

@@ -1,5 +1,6 @@
 <app-input-fields *ngIf="isAuthenticated" (topic)="recieveTopic($event)"></app-input-fields>
-<div class="table-container" *ngIf="topics && topics.length; else noUsersTemplate">
+<div [ngClass]="{'userLoggedIn' : isAuthenticated}" class="table-container" *ngIf="topics && topics.length; else noUsersTemplate">
+    <h1>Topics</h1>
     <table>
         <thead>
             <tr>

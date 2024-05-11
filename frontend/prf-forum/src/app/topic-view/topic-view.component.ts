@@ -9,6 +9,8 @@ import {MatIconModule} from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { User } from '../shared/Model/User';
 import { AuthService } from '../shared/services/auth.service';
+import { DialogComponent } from '../shared/components/dialog/dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-topic-view',
@@ -30,7 +32,8 @@ export class TopicViewComponent {
   constructor(private authService: AuthService,
               private topicService: TopicService,
               private route: ActivatedRoute,
-              private router: Router) { }
+              private router: Router,
+              private dialog: MatDialog) { }
 
   topicSubscription = 
   this.topicService.getTopic(this.route.snapshot.paramMap.get('id')!).subscribe(
@@ -38,6 +41,9 @@ export class TopicViewComponent {
       this.topic = data;
       this.comments = data.comments as unknown as Comment[];
       this.comments?.forEach(comment => { comment.comment = comment.comment.replace(/\n/g, '<br>'); });
+      this.comments?.forEach(comment => {
+        comment.comment = comment.comment.replace(/<img/g, '<img width="90%"');
+      });
       console.log(data);
     }, (err) => {
       console.log(err);
@@ -63,6 +69,9 @@ export class TopicViewComponent {
         this.topic = data;
         this.comments = data.comments as unknown as Comment[];
         this.comments?.forEach(comment => { comment.comment = comment.comment.replace(/\n/g, '<br>'); });
+        this.comments?.forEach(comment => {
+          comment.comment = comment.comment.replace(/<img/g, '<img width="90%"');
+        });
         console.log(data);
       }, error: (err) => {
         console.log(err);
@@ -116,12 +125,17 @@ export class TopicViewComponent {
   }
 
   deleteComment(commentId: string) {
-    this.topicService.deleteComment(this.topic!._id, commentId).subscribe({
-      next: (data) => {
-        console.log(data);
-        this.comments = this.comments?.filter(c => c._id !== commentId);
-      }, error: (err) => {
-        console.log(err);
+    const dialogRef = this.dialog.open(DialogComponent, { data: { message: 'comment' } });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.topicService.deleteComment(this.topic!._id, commentId).subscribe({
+          next: (data) => {
+            console.log(data);
+            this.comments = this.comments?.filter(c => c._id !== commentId);
+          }, error: (err) => {
+            console.log(err);
+          }
+        });
       }
     });
   }

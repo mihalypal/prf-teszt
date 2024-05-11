@@ -29,7 +29,17 @@ export class SignupComponent implements OnInit {
       confirmPassword: ['', [Validators.required]]
     }, {
       validator: this.mustMatch('password', 'confirmPassword')
-    })
+    });
+    
+    this.authService.checkAuth().subscribe({
+      next: (data) => {
+        if (data) {
+          this.navigate('/topics');
+        }
+      }, error: (err) => {
+        console.log(err);
+      }
+    });
   }
 
   mustMatch(controlName: string, matchingControlName: string) {
@@ -67,6 +77,10 @@ export class SignupComponent implements OnInit {
 
   goBack() {
     this.location.back();
+  }
+
+  navigate(to: string) {
+    this.router.navigateByUrl(to);
   }
 
 }

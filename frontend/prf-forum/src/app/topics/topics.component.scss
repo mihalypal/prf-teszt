@@ -24,6 +24,10 @@ tr:nth-child(even) {
     margin: 100px 20px;
 }
 
+.userLoggedIn {
+    margin: 20px !important;
+}
+
 input {
     padding: 10px;
     border: 1px solid #ddd;
@@ -91,6 +95,10 @@ button:hover {
     &:hover {
         background-color: #4a4a4a;
     }
+}
+
+h1 {
+    text-align: center;
 }
 
 @keyframes gradient-in {
